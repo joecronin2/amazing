@@ -1,0 +1,13 @@
+requirements:
+- config file parsing
+- maze OOP representation
+- maze generation algorithm
+- maze solving algorithm (dfs, bfs, dijkstra, a*)
+- maze graphical representation
+- arrow movement mode
+
+
+Classes:
+Cell: type of maze cell (e.g. wall, nothing, start, goal)
+Maze: (pure maze data, resizing, access, updating)
+Maze(helper?): wrapper methods 
