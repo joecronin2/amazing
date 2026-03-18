@@ -3,15 +3,21 @@ import random
 
 
 class MazeGeneratorDFS(MazeGenerator):
-    DIRECTIONS: tuple[tuple[int, int], ...] = ((1, 0), (-1, 0), (0, 1), (0, -1))
+    DIRECTIONS: tuple[tuple[int, int], ...] = (
+        (1, 0),
+        (-1, 0),
+        (0, 1),
+        (0, -1),
+    )
 
     def generate(self, dimensions: tuple[int, int]) -> Maze:
-        maze = Maze(dimensions)
         width, height = dimensions
-        # maze.generate_start_and_end()
+        maze = Maze((width, height))
         self._carve(maze, (0, 0))
-        maze.set_start((0, 0))
-        maze.set_end((width - 2, height - 1))
+        start_y = random.randrange(0, height, 2)
+        maze.set_start((0, start_y))
+        end_y = random.randrange(0, height, 2)
+        maze.set_end((width - 1, end_y))
         return maze
 
     def _carve(self, maze: Maze, pos: tuple[int, int]) -> None:
@@ -48,11 +54,3 @@ class MazeSolverDFS(MazeSolver):
         if not dfs(maze.start):
             raise ValueError("no path found")
         return maze.path
-
-
-maze = MazeGeneratorDFS().generate((30, 20))
-print(maze)
-print("\n\n")
-solver = MazeSolverDFS()
-solver.solve(maze)
-print(maze)
