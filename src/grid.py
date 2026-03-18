@@ -1,30 +1,41 @@
 from typing import Iterator
+from bitarray import bitarray
 
 
 class BinaryGrid:
-    __grid: list[bool]
+    _grid: bitarray
+    width: int
+    height: int
 
-    def __init__(self, width: int, height: int, default: bool = True) -> None:
-        if width <= 0 or height <= 0:
+    def __init__(
+        self,
+        dimensions: tuple[int, int],
+        default: bool = True,
+    ) -> None:
+        self.width, self.height = dimensions
+        if self.width <= 0 or self.height <= 0:
             raise ValueError("dimensions must be greater than 0")
+        self._grid = bitarray(self.width * self.height)
+        self._grid.setall(default)
 
-        self.width = width
-        self.height = height
-        self.__grid = [default] * (width * height)
-
-    def _index(self, x: int, y: int) -> int:
+    def _index(self, pos: tuple[int, int]) -> int:
+        x, y = pos
         if not (0 <= x < self.width and 0 <= y < self.height):
-            raise ValueError(f"invalid coordinate ({x}, {y})")
+            raise ValueError(
+                f"coordinate ({x}, {y}) exceeds "
+                f"bounds ({self.width}, {self.height})"
+            )
         return y * self.width + x
 
-    def get(self, x: int, y: int) -> bool:
+    def get(self, pos: tuple[int, int]) -> bool:
         """True = wall, False = open"""
-        return self.__grid[self._index(x, y)]
+        return bool(self._grid[self._index(pos)])
 
-    def set(self, x: int, y: int, value: bool) -> None:
-        self.__grid[self._index(x, y)] = value
+    def set(self, pos: tuple[int, int], value: bool) -> None:
+        self._grid[self._index(pos)] = value
 
-    def rows(self) -> Iterator[list[bool]]:
+    def rows(self) -> Iterator[Iterator[bool]]:
         for y in range(self.height):
             start = y * self.width
-            yield self.__grid[start:start + self.width]
+            end = start + self.width
+            yield (bool(v) for v in self._grid[start:end])

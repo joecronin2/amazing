@@ -1,44 +1,58 @@
-from maze import Maze, MazeGenerator, MazeSolver
+from maze import Maze, MazePath, MazeGenerator, MazeSolver
 import random
-
-def render_ascii_no_edges(maze: Maze) -> None:
-    symbols = {True: "#", False: " "}
-    for y in range(maze.height):
-        line = ""
-        for x in range(maze.width):
-            if (x, y) == maze.start:
-                line += "S"
-            elif (x, y) == maze.end:
-                line += "E"
-            else:
-                line += symbols[maze.is_wall(x, y)]
-        print(line)
 
 
 class MazeGeneratorDFS(MazeGenerator):
-    def generate(self, width: int, height: int) -> Maze:
-        maze = Maze(width, height)
-        maze.set_start(0, 0)
-        maze.set_end(width - 1, height - 1)
-        self._carve(maze, 0, 0)
+    DIRECTIONS: tuple[tuple[int, int], ...] = ((1, 0), (-1, 0), (0, 1), (0, -1))
+
+    def generate(self, dimensions: tuple[int, int]) -> Maze:
+        maze = Maze(dimensions)
+        width, height = dimensions
+        # maze.generate_start_and_end()
+        self._carve(maze, (0, 0))
+        maze.set_start((0, 0))
+        maze.set_end((width - 2, height - 1))
         return maze
 
-    def _carve(self, maze: Maze, x: int, y: int) -> None:
-        maze.set_open(x, y)
-        dirs = list(maze.neighbors(x, y))
-        random.shuffle(dirs)
-        for nx, ny in dirs:
-            jump_x, jump_y = nx + (nx - x), ny + (ny - y)
-            if maze.in_bounds(jump_x, jump_y) and maze.is_wall(jump_x, jump_y):
-                wall_x, wall_y = (x + jump_x) // 2, (y + jump_y) // 2
-                maze.set_open(wall_x, wall_y)
-                self._carve(maze, jump_x, jump_y)
+    def _carve(self, maze: Maze, pos: tuple[int, int]) -> None:
+        maze.set_open(pos)
+        x, y = pos
+        directions = list(self.DIRECTIONS)
+        random.shuffle(directions)
+
+        for dx, dy in directions:
+            jump = (x + 2 * dx, y + 2 * dy)
+            if maze.in_bounds(jump) and maze.is_wall(jump):
+                wall = (x + dx, y + dy)
+                maze.set_open(wall)
+                self._carve(maze, jump)
 
 
 class MazeSolverDFS(MazeSolver):
     def solve(self, maze: Maze) -> MazePath:
+        visited: set[tuple[int, int]] = set()
+
+        def dfs(pos: tuple[int, int]) -> bool:
+            if pos in visited:
+                return False
+            visited.add(pos)
+            maze.path.add(pos)
+            if pos == maze.end:
+                return True
+            for neighbor in maze.open_neighbors(pos):
+                if dfs(neighbor):
+                    return True
+            maze.path.cells.pop()
+            return False
+
+        if not dfs(maze.start):
+            raise ValueError("no path found")
+        return maze.path
 
 
-
-maze = MazeGeneratorDFS().generate(10, 10)
-render_ascii_no_edges(maze)
+maze = MazeGeneratorDFS().generate((30, 20))
+print(maze)
+print("\n\n")
+solver = MazeSolverDFS()
+solver.solve(maze)
+print(maze)
