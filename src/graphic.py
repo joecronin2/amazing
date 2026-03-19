@@ -1,5 +1,5 @@
 import mlx
-from typing import Any
+from typing import Any, Optional
 from dataclasses import dataclass
 
 from maze import Maze
@@ -120,6 +120,12 @@ class MlxAPI:
         self.images.append(img_buf)
         return img_buf
 
+    # def destroy_image(self, image) -> None:
+    #     return self.app.mlx_destroy_image(self. mlx_ptr, image)
+    #
+    # def destroy_window(self, window) -> None:
+    #     return self.app.mlx_destroy_window(self. mlx_ptr, window)
+
     def set_hook(self, win, event: int, mask: int, callback, param=None):
         self.app.mlx_hook(win, event, mask, callback, param)
 
@@ -143,42 +149,42 @@ class MlxAPI:
 
 
 class MlxMazeRenderer:
-    def __init__(
-        self,
-        api: MlxAPI,
-        window: Any,
-        maze: Maze,
-        cell_size: int = 20,
-    ) -> None:
+    def __init__(self, api: MlxAPI, window: Any, maze: Maze, cell_size: int = 20):
         self.api = api
         self.window = window
         self.maze = maze
         self.cell_size = cell_size
-        width = self.maze.width * self.cell_size
-        height = self.maze.height * self.cell_size
-        self._img = self.api.create_image(width, height)
-
-    def _get_color(self, pos: tuple[int, int], path_set: set) -> int:
-        if pos == self.maze.start:
-            return Color.GREEN
-        if pos == self.maze.end:
-            return Color.RED
-        if self.maze.is_wall(pos):
-            return Color.BLACK
-        if pos in path_set:
-            return Color.BLUE
-        return Color.WHITE
+        self._img = self.api.create_image(
+            self.maze.width * cell_size, self.maze.height * cell_size
+        )
 
     def _draw_cell(self, x: int, y: int, color: int) -> None:
         px, py = x * self.cell_size, y * self.cell_size
         pixel_bytes = Color.to_bytes(color)
-        for row_offset in range(self.cell_size):
-            self._img.draw_row(px, py + row_offset, self.cell_size, pixel_bytes)
+        for row in range(self.cell_size):
+            self._img.draw_row(px, py + row, self.cell_size, pixel_bytes)
 
-    def render(self) -> None:
-        path_set = set(self.maze.path) if self.maze.path else set()
+    def _get_cell_color(
+        self, pos: tuple[int, int], player: Optional[tuple[int, int]], path: set
+    ) -> int:
+        if pos == player:
+            return Color.PURPLE
+        if pos == self.maze.start:
+            return Color.GREEN
+        if pos == self.maze.end:
+            return Color.RED
+        if pos in path:
+            return Color.YELLOW
+        return Color.BLACK if self.maze.is_wall(pos) else Color.WHITE
+
+    def render(
+        self,
+        player_pos: Optional[tuple[int, int]] = None,
+        active_path: Optional[set] = None,
+    ) -> None:
+        path_set = active_path if active_path is not None else set()
         for y in range(self.maze.height):
             for x in range(self.maze.width):
-                color = self._get_color((x, y), path_set)
+                color = self._get_cell_color((x, y), player_pos, path_set)
                 self._draw_cell(x, y, color)
         self.api.display(self.window, self._img)
