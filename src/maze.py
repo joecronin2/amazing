@@ -1,7 +1,6 @@
 from abc import ABC, abstractmethod
 from collections.abc import Iterator
 from dataclasses import dataclass, field
-import random
 from grid import BinaryGrid
 
 
@@ -34,13 +33,12 @@ class MazePath:
 
 class Maze:
     __grid: BinaryGrid
-    path: MazePath
+    path: MazePath  # TODO: probably should refactor to solver
     start: tuple[int, int]
     end: tuple[int, int]
 
     def in_bounds(self, pos: tuple[int, int]) -> bool:
-        x, y = pos
-        return 0 <= x < self.width and 0 <= y < self.height
+        return 0 <= pos[0] < self.width and 0 <= pos[1] < self.height
 
     def __init__(self, dimensions: tuple[int, int]) -> None:
         self.width, self.height = dimensions
@@ -87,13 +85,6 @@ class Maze:
     def rows(self) -> Iterator[Iterator[bool]]:
         return self.__grid.rows()
 
-    # def generate_start_and_end(self) -> None:
-    #     r = random.randrange(self.height)
-    #     c = random.randrange(self.width)
-
-        # self.set_start(())
-        # self.set_end(())
-
     def _pos_ascii(self, pos: tuple[int, int]) -> str:
         if pos == self.start:
             return "s"
@@ -125,10 +116,3 @@ class MazeSolver(ABC):
 class MazeRenderer(ABC):
     @abstractmethod
     def render(self, maze: Maze) -> None: ...
-
-
-# class MazeDisplayer:
-#     @staticmethod
-#     def display_ascii(maze: Maze, symbols: dict[MazeCell, str]) -> None:
-#         for row in maze.rows():
-#             print("".join(symbols[cell] for cell in row))

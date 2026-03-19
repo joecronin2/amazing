@@ -28,7 +28,6 @@ class BinaryGrid:
         return y * self.width + x
 
     def get(self, pos: tuple[int, int]) -> bool:
-        """True = wall, False = open"""
         return bool(self._grid[self._index(pos)])
 
     def set(self, pos: tuple[int, int], value: bool) -> None:
