@@ -16,6 +16,9 @@ class Maze:
         self.width, self.height = dimensions
         self.__grid = BinaryGrid(dimensions, True)  # True is wall
 
+    def set_masked(self, masked: set[tuple[int, int]]) -> None:
+        self.masked = masked
+
     def set_start(self, pos: tuple[int, int]) -> None:
         self.start = pos
         self.set_open(pos)

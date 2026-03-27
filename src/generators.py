@@ -3,13 +3,6 @@ import random
 
 
 class MazeGeneratorDFS(MazeGenerator):
-    DIRECTIONS: tuple[tuple[int, int], ...] = (
-        (1, 0),
-        (-1, 0),
-        (0, 1),
-        (0, -1),
-    )
-
     def generate(self, dimensions: tuple[int, int]) -> Maze:
         width, height = dimensions
         maze = Maze((width, height))
@@ -23,9 +16,8 @@ class MazeGeneratorDFS(MazeGenerator):
     def _carve(self, maze: Maze, pos: tuple[int, int]) -> None:
         maze.set_open(pos)
         x, y = pos
-        directions = list(self.DIRECTIONS)
+        directions = list(((1, 0), (-1, 0), (0, 1), (0, -1)))
         random.shuffle(directions)
-
         for dx, dy in directions:
             jump = (x + 2 * dx, y + 2 * dy)
             if maze.in_bounds(jump) and maze.is_wall(jump):

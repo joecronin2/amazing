@@ -1,4 +1,4 @@
-from generators import MazeGeneratorDFS
+from generators import MazeGeneratorDFS, MazeGeneratorPrims
 from solvers import MazeSolverDFS
 from graphic import MlxMazeRenderer, MlxAPI
 from dataclasses import dataclass
@@ -48,7 +48,7 @@ class MazeSolverApp:
         }
 
     def _reset_logic(self) -> None:
-        self.maze = MazeGeneratorDFS().generate(self.dims)
+        self.maze = MazeGeneratorPrims().generate(self.dims)
         self.full_path = MazeSolverDFS().solve(self.maze)
         self.step_iterator = iter(self.full_path)
         self.current_path: set[tuple[int, int]] = set()
