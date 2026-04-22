@@ -1,13 +1,11 @@
-requirements:
-- config file parsing
-- maze OOP representation
-- maze generation algorithm
-- maze solving algorithm (dfs, bfs, dijkstra, a*)
-- maze graphical representation
-- arrow movement mode
+todo:
+- config file
+- output file
+- menu or control options with keys
+- remove animation for simplicity?
+- readme
+- more maze solving algorithms (dfs, bfs, dijkstra, a*)
+- more maze generation algorithms
+- '42' in center
 
-
-Classes:
-Cell: type of maze cell (e.g. wall, nothing, start, goal)
-Maze: (pure maze data, resizing, access, updating)
-Maze(helper?): wrapper methods 
+https://cdn.intra.42.fr/document/document/48485/mlx-2.2-py3-ubuntu-any.whl
