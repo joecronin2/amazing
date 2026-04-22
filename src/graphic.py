@@ -5,6 +5,18 @@ from dataclasses import dataclass
 from maze import Maze
 
 
+class Key:
+    ESC = 65307
+    SPACE = 32
+    ENTER = 65293
+    PLUS = 61
+    MINUS = 45
+    LEFT = 65361
+    UP = 65362
+    RIGHT = 65363
+    DOWN = 65364
+
+
 class Color:
     # 0xAARRGGBB Format
     BLACK = 0xFF000000
@@ -121,10 +133,10 @@ class MlxAPI:
         return img_buf
 
     def destroy_image(self, image) -> None:
-        return self.app.mlx_destroy_image(self. mlx_ptr, image)
+        return self.app.mlx_destroy_image(self.mlx_ptr, image)
 
     def destroy_window(self, window) -> None:
-        return self.app.mlx_destroy_window(self. mlx_ptr, window)
+        return self.app.mlx_destroy_window(self.mlx_ptr, window)
 
     def set_hook(self, win, event: int, mask: int, callback, param=None):
         self.app.mlx_hook(win, event, mask, callback, param)

@@ -5,6 +5,8 @@ from grid import BinaryGrid
 
 class Maze:
     __grid: BinaryGrid
+    width: int
+    height: int
     masked: set[tuple[int, int]]
     start: tuple[int, int]
     end: tuple[int, int]
@@ -56,22 +58,27 @@ class Maze:
     def rows(self) -> Iterator[Iterator[bool]]:
         return self.__grid.rows()
 
-    def _pos_ascii(self, pos: tuple[int, int]) -> str:
-        if pos == self.start:
-            return "s"
-        elif pos == self.end:
-            return "e"
-        # elif pos in self.path:
-        #     return "."
-        elif self.is_wall(pos):
-            return "#"
-        return " "
-
     def __str__(self) -> str:
+        # walls, start, end, masked
+        def cell_repr(pos: tuple[int, int]) -> str:
+            if pos == self.start:
+                return "S"
+            elif pos == self.end:
+                return "E"
+            elif pos in self.masked:
+                return "X"
+            elif self.is_wall(pos):
+                return "#"
+            else:
+                return " "
+
         return "\n".join(
-            "".join(self._pos_ascii((x, y)) for x, _ in enumerate(row))
-            for y, row in enumerate(self.rows())
+            "".join(cell_repr((x, y)) for x in range(self.width))
+            for y in range(self.height)
         )
+
+    def __repr__(self) -> str:
+        return f"Maze({self.width}x{self.height})"
 
 
 class MazeGenerator(ABC):

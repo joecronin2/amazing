@@ -1,12 +1,20 @@
-from generators import MazeGeneratorDFS
+from maze import MazeGenerator, MazeSolver
 from graphic import MlxMazeRenderer, MlxAPI
 from typing import Any, Optional, Callable
 
 
 class MazeGame:
-    def __init__(self, dims: tuple[int, int] = (31, 21), size: int = 20):
+    def __init__(
+        self,
+        generator: MazeGenerator,
+        solver: MazeSolver,
+        dims: tuple[int, int] = (31, 21),
+        size: int = 20,
+    ):
+        self.generator = generator
+        self.solver = solver
         self.size = size
-        self.maze = MazeGeneratorDFS().generate(dims)
+        self.maze = self.generator.generate(dims)
         self.player_pos = self.maze.start
 
         self.w, self.h = self.maze.width * size, self.maze.height * size

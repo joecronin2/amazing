@@ -1,5 +1,4 @@
-from generators import MazeGeneratorDFS, MazeGeneratorPrims
-from solvers import MazeSolverDFS
+from maze import MazeGenerator, MazeSolver
 from graphic import MlxMazeRenderer, MlxAPI
 from dataclasses import dataclass
 
@@ -24,7 +23,6 @@ class SpeedConfig:
             return 1, max(1, steps)
 
     def adjust(self, delta: float):
-        """Adjusts the speed index while keeping it in [0.0, 1.0]."""
         self.value = max(0.0, min(1.0, self.value + delta))
 
     def get_current_duration(self) -> float:
@@ -32,7 +30,18 @@ class SpeedConfig:
 
 
 class MazeSolverApp:
-    def __init__(self, dims=(31, 21), size=20):
+    def __init__(
+        self,
+        generator: MazeGenerator,
+        solver: MazeSolver,
+        dims=(
+            31,
+            21,
+        ),
+        size=20,
+    ):
+        self.generator = generator
+        self.solver = solver
         self.dims, self.size = dims, size
         self.speed = SpeedConfig()
         self.api, self.win, self.renderer = None, None, None
@@ -48,13 +57,12 @@ class MazeSolverApp:
         }
 
     def _reset_logic(self) -> None:
-        self.maze = MazeGeneratorPrims().generate(self.dims)
-        self.full_path = MazeSolverDFS().solve(self.maze)
+        self.maze = self.generator.generate(self.dims)
+        self.full_path = self.solver.solve(self.maze)
         self.step_iterator = iter(self.full_path)
         self.current_path: set[tuple[int, int]] = set()
         self.paused = self.finished = False
         self.frame_counter = 0
-
         if self.renderer:
             self.renderer.maze = self.maze
 
