@@ -6,13 +6,13 @@ from dataclasses import dataclass
 @dataclass
 class SpeedConfig:
     value: float = 0.5
-    slowest_sec: float = 5.0
-    fastest_sec: float = 0.005
+    slowest: float = 5.0
+    fastest: float = 0.005
     fps: int = 60
 
     def get_gears(self) -> tuple[int, int]:
         duration = (
-            self.slowest_sec * (self.fastest_sec / self.slowest_sec) ** self.value
+            self.slowest * (self.fastest / self.slowest) ** self.value
         )
         frame_time = 1.0 / self.fps
         if duration >= frame_time:
@@ -26,7 +26,7 @@ class SpeedConfig:
         self.value = max(0.0, min(1.0, self.value + delta))
 
     def get_current_duration(self) -> float:
-        return self.slowest_sec * (self.fastest_sec / self.slowest_sec) ** self.value
+        return self.slowest * (self.fastest / self.slowest) ** self.value
 
 
 class MazeSolverApp:
@@ -70,7 +70,8 @@ class MazeSolverApp:
         self.speed.adjust(delta)
         delay, steps = self.speed.get_gears()
         curr_sec = self.speed.get_current_duration()
-        print(f"Target: {curr_sec:.3f}s/move | Gears: {steps} steps @ {delay}f delay")
+        print(f"Target: {curr_sec:.3f}s/move |",
+              f"Gears: {steps} steps @ {delay}f delay")
 
     def _update(self, _) -> int:
         if self.paused or self.finished or not self.renderer:
@@ -94,9 +95,13 @@ class MazeSolverApp:
         with MlxAPI() as api:
             self.api = api
             self.win = api.create_window((w, h), "Maze Benchmark")
-            self.renderer = MlxMazeRenderer(api, self.win, self.maze, self.size)
+            self.renderer = MlxMazeRenderer(api,
+                                            self.win,
+                                            self.maze,
+                                            self.size)
             api.on_key_down(
-                self.win, lambda c, _: self.actions.get(c, lambda: None)(), self
+                self.win, lambda c, _: self.actions.get(c, lambda: None)(),
+                self
             )
             api.on_loop(self._update, self)
             api.loop()

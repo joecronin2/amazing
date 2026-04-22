@@ -161,7 +161,11 @@ class MlxAPI:
 
 
 class MlxMazeRenderer:
-    def __init__(self, api: MlxAPI, window: Any, maze: Maze, cell_size: int = 20):
+    def __init__(self,
+                 api: MlxAPI,
+                 window: Any,
+                 maze: Maze,
+                 cell_size: int = 20):
         self.api = api
         self.window = window
         self.maze = maze
@@ -177,7 +181,10 @@ class MlxMazeRenderer:
             self._img.draw_row(px, py + row, self.cell_size, pixel_bytes)
 
     def _get_cell_color(
-        self, pos: tuple[int, int], player: Optional[tuple[int, int]], path: set
+        self,
+        pos: tuple[int, int],
+        player: Optional[tuple[int, int]],
+        path: set
     ) -> int:
         if pos == player:
             return Color.PURPLE
