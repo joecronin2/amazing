@@ -1,11 +1,14 @@
 from game import MazeGame
+from generators import MazeGeneratorDFS
 from solverapp import MazeSolverApp
 from solvers import MazeSolverDFS
 
 
 def main():
     # app = MazeSolverApp()
-    app = MazeGame()
+    gen = MazeGeneratorDFS()
+    solver = MazeSolverDFS()
+    app = MazeGame(gen, solver)
     app.run()
 
 
