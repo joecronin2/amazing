@@ -10,7 +10,7 @@ def main():
     gen = MazeGeneratorDFS()
     solver = MazeSolverDFS()
     app = MazeGame(gen, solver)
-    create_output(app.maze)
+    create_output(app)
     app.run()
 
 
