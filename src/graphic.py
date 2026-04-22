@@ -78,7 +78,7 @@ class ImageBuffer:
     def put_pixel(self, x: int, y: int, pixel_bytes: bytes) -> None:
         if self._is_in_bounds(x, y):
             start = self._get_offset(x, y)
-            self.buffer[start : start + self.bytes_per_pixel] = pixel_bytes
+            self.buffer[start: start + self.bytes_per_pixel] = pixel_bytes
 
     def draw_row(
         self,
@@ -161,7 +161,11 @@ class MlxAPI:
 
 
 class MlxMazeRenderer:
-    def __init__(self, api: MlxAPI, window: Any, maze: Maze, cell_size: int = 20):
+    def __init__(self,
+                 api: MlxAPI,
+                 window: Any,
+                 maze: Maze,
+                 cell_size: int = 20):
         self.api = api
         self.window = window
         self.maze = maze
@@ -177,7 +181,10 @@ class MlxMazeRenderer:
             self._img.draw_row(px, py + row, self.cell_size, pixel_bytes)
 
     def _get_cell_color(
-        self, pos: tuple[int, int], player: Optional[tuple[int, int]], path: set
+        self,
+        pos: tuple[int, int],
+        player: Optional[tuple[int, int]],
+        path: set
     ) -> int:
         if pos == player:
             return Color.PURPLE

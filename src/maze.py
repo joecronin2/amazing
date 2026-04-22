@@ -55,6 +55,37 @@ class Maze:
             if not self.is_wall(neighbor):
                 yield neighbor
 
+    def bin_neighbors(
+            self,
+            pos: tuple[int, int],
+    ) -> int:
+        n = 0
+        x, y = pos
+        if self.in_bounds([x, y-1]):
+            if self.__grid.get([x, y-1]):
+                n += 1
+        else:
+            n += 1
+
+        if self.in_bounds([x+1, y]):
+            if self.__grid.get([x+1, y]):
+                n += 2
+        else:
+            n += 2
+
+        if self.in_bounds([x, y+1]):
+            if self.__grid.get([x, y+1]):
+                n += 4
+        else:
+            n += 4
+
+        if self.in_bounds([x-1, y]):
+            if self.__grid.get([x-1, y]):
+                n += 8
+        else:
+            n += 8
+        return n
+
     def rows(self) -> Iterator[Iterator[bool]]:
         return self.__grid.rows()
 
