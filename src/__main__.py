@@ -2,6 +2,7 @@ from game import MazeGame
 from generators import MazeGeneratorDFS
 from solverapp import MazeSolverApp
 from solvers import MazeSolverDFS
+from output import create_output
 
 
 def main():
@@ -9,6 +10,7 @@ def main():
     gen = MazeGeneratorDFS()
     solver = MazeSolverDFS()
     app = MazeGame(gen, solver)
+    create_output(app.maze)
     app.run()
 
 
