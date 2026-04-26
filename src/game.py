@@ -66,6 +66,9 @@ class MazeGame:
         with MlxAPI() as api:
             self.api = api
             self.win = api.create_window((self.w, self.h), "A-Maze-Ing")
-            self.renderer = MlxMazeRenderer(api, self.win, self.maze, self.size)
+            self.renderer = MlxMazeRenderer(api,
+                                            self.win,
+                                            self.maze,
+                                            self.size)
             self._setup_hooks()
             api.loop()
