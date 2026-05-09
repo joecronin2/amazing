@@ -3,20 +3,12 @@ from maze import Maze, MazeSolver
 
 class MazeSolverDFS(MazeSolver):
     def solve(self, maze: Maze) -> list[tuple[int, int]]:
-        path = list(set())
-
-        def dfs(pos: tuple[int, int]) -> bool:
-            if pos in path:
-                return False
-            path.append(pos)
+        stack = [(maze.start, [maze.start])]  # (position, path so far)
+        while stack:
+            pos, path = stack.pop()
             if pos == maze.end:
-                return True
+                return path
             for neighbor in maze.open_neighbors(pos):
-                if dfs(neighbor):
-                    return True
-            path.pop()
-            return False
-
-        if not dfs(maze.start):
-            raise ValueError("no path found")
-        return path
+                if neighbor not in path:
+                    stack.append((neighbor, path + [neighbor]))
+        raise ValueError("no path found")

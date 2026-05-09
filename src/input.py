@@ -41,5 +41,7 @@ def handle_input_open() -> None:
     except IOError:
         herecouldvebeensomeerrorhandling()
     else:
-        f
+        parse_input(f)
+    finally:
+        f.close()
 
