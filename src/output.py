@@ -6,8 +6,7 @@ from game import MazeGame
 def hexify_maze(maze: Maze, f: TextIOWrapper):
     for y in range(maze.height):
         for x in range(maze.width):
-            h = maze.bin_neighbors((x, y))
-            f.write(hex(h)[2])
+            f.write(str(int(maze.is_wall((x, y)))))
         f.write("\n")
 
 

@@ -8,7 +8,7 @@ class MazeGame:
         self,
         generator: MazeGenerator,
         solver: MazeSolver,
-        dims: tuple[int, int] = (31, 21),
+        dims: tuple[int, int] = (100, 100),
         size: int = 20,
     ):
         self.generator = generator
